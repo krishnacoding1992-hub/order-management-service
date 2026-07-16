@@ -9,6 +9,7 @@ import com.krishnacoding.oms.repository.CustomerRepository;
 import com.krishnacoding.oms.repository.UserRepository;
 import com.krishnacoding.oms.service.RegisterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,21 +18,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class RegisterServiceImpl implements RegisterService {
 
+    private final PasswordEncoder passwordEncoder;
+
     private final CustomerRepository customerRepository;
 
     private final UserRepository userRepository;
 
     @Override
     public Customer registerCustomer(RegisterRequest registerRequest) {
-        // Step 1: Validate Email
+
+        // Step 1: Validate Username
+        if(userRepository.existsByUsername(registerRequest.getUsername())){
+            throw new DuplicateResourceException("Username already exists");
+        }
+
+        // Step 2: Validate Email
         if(customerRepository.existsByEmail(registerRequest.getEmail())){
             throw new DuplicateResourceException("Email already exists");
         }
 
-        // Step 2: Validate Username
-        if(userRepository.existsByUsername(registerRequest.getUsername())){
-            throw new DuplicateResourceException("Username already exists");
-        }
 
         //Create Customer
         Customer  customer = new Customer();
@@ -50,7 +55,7 @@ public class RegisterServiceImpl implements RegisterService {
         //Create User
         User user = new User();
         user.setUsername(registerRequest.getUsername());
-        user.setPassword(registerRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setRole(Role.CUSTOMER);
         user.setCustomer(savedCustomer);
         user.setEnabled(true);

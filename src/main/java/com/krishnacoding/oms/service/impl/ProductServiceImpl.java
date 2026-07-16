@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    ProductRepository productRepository;
+   private final ProductRepository productRepository;
 
     @Override
     public void saveProduct(Products products) {

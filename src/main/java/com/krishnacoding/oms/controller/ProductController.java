@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    ProductServiceImpl productServiceImpl;
+   private final ProductServiceImpl productServiceImpl;
 
     @PostMapping
     public Products createProduct(@RequestBody Products products) {
