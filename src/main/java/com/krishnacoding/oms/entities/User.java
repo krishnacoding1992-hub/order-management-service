@@ -24,7 +24,7 @@ public class User {
     @Column(nullable = false)
     private Role role;
     @Column(nullable = false)
-    private Boolean enabled;
+    private boolean enabled;
     @OneToOne
     @JoinColumn(name="customer_id" ,nullable=false,unique=true)
     private Customer customer;
